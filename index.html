@@ -1,0 +1,23 @@
+<html>
+
+<head>
+    <title>Standalone Vue Component Example</title>    
+</head>
+
+<body>
+    <div id="app">
+        {{ message }}
+    </div>
+
+    <script src="./js/vue@2.0.5.js"></script>
+    <script>
+        var app = new Vue({
+          el: '#app',
+          data: {
+            message: 'A Standalone Vue Component Example'
+          }
+        })
+    </script>
+</body>
+
+</html>
