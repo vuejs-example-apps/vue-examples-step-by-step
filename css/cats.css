@@ -1,6 +1,10 @@
 .cat-pins {
 }
 
+.filter {
+    margin: 1em 0;
+}
+
 .cat-pin {
     display: inline-block;
     width: 200px;
@@ -33,7 +37,11 @@
             padding: .5em;
             margin: 0 .5em;
             font-size: 10px;
+            cursor: pointer;
         }
+            .cat-pin .tags > li.active {
+                background-color: black;
+            }
 
     .cat-pin .description {
         font-size: 14px;

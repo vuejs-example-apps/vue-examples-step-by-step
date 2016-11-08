@@ -11,21 +11,18 @@
 
     <div id="meta">
         <div class="image">
-            <img src="./img/step2.1.jpg">
+            <img src="./img/step2.2.jpg">
         </div>
         <div class="description">
             <p class="current-step-message">
-                Under the hood, filtering can be easily implemented with a computed property. See <b>filtered_cat_pins</b> in the source code for implementation details. You can check that it works via console. Good UI, hovewer, requires us to use the event system, which comes in the next example.
+                In this step we organise a mixed UI for filtering. First, we have an input, which value is bound to the <b>filter_value</b> in both ways via <b>v-model</b> attribute. This allows both manual filtering and simple demonstration of current filter value. The rest of the UI is organized using the event system. Inside the <b>cat-pin</b> component, we listen to the native click event on <b>li</b> elements, which represent tags. The method <b>handle_tag_click</b> emits an artificial component event, <b>'tag-clicked'</b>, wich the core Vue instance is listening to. Finally, in the core instance we use the <b>update_filter</b> event handler, which allows us to set (or reset) current filter value.
             </p>
-            <p class="task-message">
-                We would really like to keep this set of examples as "question-driven" as possible. So, the next question is: how to implement filtering in response on a click over certain tag, given that this tag lives in a child component? Try to think ahead, and we believe figure out a decent solution before moving to the next @step2.2.
-            </p>
-            <p class="previous-step-message">
-                This example demonstrates the power of Vue components. We build a primitive Pinterest clone, dedicated to cute cats and vanilla songs. Apart from the root Vue instance, we also have a global component <b>cat-pin</b>, which uses a local component <b>author-signature</b>. Both of these components utilize <b>props</b>. We also introduce the concept of <b>computed properties</b> — take a look at user avatars, which <i>are actually not provided</i> for two of three existing signatures, according to the data we have.
+            <p>
+                We also want to indicate the active filter in the list. To achieve this, we provide the filter value as a prop, and use special object syntax for class binding, allowing us to set <b>active</b> class conditionally.
             </p>
             <p class="previous-step-message task-message">
-                At this moment, we want to offer you a task. Try to implement a filtering feature, in order to show only cat-pins marked with a certain tag. Computed properties usage is advised.                
-            </p>
+                We would really like to keep this set of examples as "question-driven" as possible. So, the next question is: how to implement filtering in response on a click over certain tag, given that this tag lives in a child component? Try to think ahead, and we believe figure out a decent solution before moving to the next @step2.2.
+            </p>            
         </div>
     </div>
 
@@ -39,13 +36,19 @@
         <div id="app">
 
             <h1>{{ title }}</h1>
-
+            <div class="filter">
+                <label for="tag_filter">Filter by tag:</label>
+                <input v-model="filter_value" name="tag_filter" id="tag_filter" placeholder="filter by tag">
+                <button @click="filter_value=''">Clear</button>
+            </div>
             <div class="cat-pins">
                 <cat-pin v-for="cat_pin in filtered_cat_pins"
                     :image_url="cat_pin.image_url"
                     :author="cat_pin.author"
                     :description="cat_pin.description"
                     :tags="cat_pin.tags"
+                    :filter_value="filter_value"
+                    @tag-clicked="update_filter"
                 ></cat-pin>
                 <link rel="stylesheet" href="./css/cats.css" type="text/css">
             </div>
@@ -64,7 +67,7 @@
         <div class="cat-pin">
             <div class="image"><img :src="image_url"></div>
             <ul class="tags">
-                <li v-for="tag in tags">{{ tag }}</li>                
+                <li v-for="tag in tags" :class='{active: filter_value == tag}' @click='handle_tag_click(tag)'>{{ tag }}</li>                
             </ul>
             <p class="description">{{ description }}</p>
             <author-signature :avatar_url="author.avatar_url" :name="author.name" :status="author.status" :gender="author.gender">
@@ -74,7 +77,12 @@
     <script>
         Vue.component('cat-pin', {
             template: '#cat-pin-template',
-            props: ['image_url', 'author', 'tags', 'description'],
+            props: ['image_url', 'author', 'tags', 'description', 'filter_value'],
+            methods: {
+                handle_tag_click: function (tag) {
+                    this.$emit('tag-clicked', tag);
+                }
+            },
             components: {
                 'author-signature': {
                     template: '#author-signature-template',
@@ -103,6 +111,15 @@
                         return pin.tags.indexOf(term) > -1;
                     })
               }
+          },
+          methods: {
+            update_filter: function (filter_value) {
+                if (this.filter_value == filter_value) {
+                    this.filter_value = '';
+                } else {
+                    this.filter_value = filter_value;
+                }
+            }
           },
           data: {
             title: 'CatInterest',
