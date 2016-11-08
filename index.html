@@ -11,13 +11,19 @@
 
     <div id="meta">
         <div class="image">
-            <img src="./img/step2.jpg">
+            <img src="./img/step2.1.jpg">
         </div>
         <div class="description">
             <p class="current-step-message">
-                This example demonstrates the power of Vue components. We build a primitive Pinterest clone, dedicated to cute cats and vanilla songs. Apart from the root Vue instance, we also have a global component <b>cat-pin</b>, which uses a local component <b>author-signature</b>. Both of these components utilize <b>props</b>. We also introduce the concept of <b>computed properties</b> — take a look at user avatars, which <i>are actually not provided</i> for two of three existing signatures, according to the data we have.
+                Under the hood, filtering can be easily implemented with a computed property. See <b>filtered_cat_pins</b> in the source code for implementation details. You can check that it works via console. Good UI, hovewer, requires us to use the event system, which comes in the next example.
             </p>
             <p class="task-message">
+                We would really like to keep this set of examples as "question-driven" as possible. So, the next question is: how to implement filtering in response on a click over certain tag, given that this tag lives in a child component? Try to think ahead, and we believe figure out a decent solution before moving to the next @step2.2.
+            </p>
+            <p class="previous-step-message">
+                This example demonstrates the power of Vue components. We build a primitive Pinterest clone, dedicated to cute cats and vanilla songs. Apart from the root Vue instance, we also have a global component <b>cat-pin</b>, which uses a local component <b>author-signature</b>. Both of these components utilize <b>props</b>. We also introduce the concept of <b>computed properties</b> — take a look at user avatars, which <i>are actually not provided</i> for two of three existing signatures, according to the data we have.
+            </p>
+            <p class="previous-step-message task-message">
                 At this moment, we want to offer you a task. Try to implement a filtering feature, in order to show only cat-pins marked with a certain tag. Computed properties usage is advised.                
             </p>
         </div>
@@ -35,7 +41,7 @@
             <h1>{{ title }}</h1>
 
             <div class="cat-pins">
-                <cat-pin v-for="cat_pin in cat_pins"
+                <cat-pin v-for="cat_pin in filtered_cat_pins"
                     :image_url="cat_pin.image_url"
                     :author="cat_pin.author"
                     :description="cat_pin.description"
@@ -89,8 +95,18 @@
         var app = new Vue({
           el: '#app',
           template: '#root-template',
+          computed: {
+              filtered_cat_pins: function () {
+                    var term = this.filter_value;
+                    if (!term) return this.cat_pins;
+                    return this.cat_pins.filter(function (pin) {
+                        return pin.tags.indexOf(term) > -1;
+                    })
+              }
+          },
           data: {
             title: 'CatInterest',
+            filter_value: '',
             cat_pins: [
                 {
                     image_url: './img/cats/munchkin-kitten.jpg',
