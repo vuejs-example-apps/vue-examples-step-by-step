@@ -3,6 +3,7 @@
 <head>
     <title>Standalone Vue Component Example</title>    
     <link rel="stylesheet" href="./css/style.css" type="text/css">
+    <link rel="stylesheet" href="./css/animations.css" type="text/css">
 </head>
 
 <body>
@@ -15,14 +16,11 @@
         </div>
         <div class="description">
             <p class="current-step-message">
-                In this step we organise a mixed UI for filtering. First, we have an input, which value is bound to the <b>filter_value</b> in both ways via <b>v-model</b> attribute. This allows both manual filtering and simple demonstration of current filter value. The rest of the UI is organized using the event system. Inside the <b>cat-pin</b> component, we listen to the native click event on <b>li</b> elements, which represent tags. The method <b>handle_tag_click</b> emits an artificial component event, <b>'tag-clicked'</b>, wich the core Vue instance is listening to. Finally, in the core instance we use the <b>update_filter</b> event handler, which allows us to set (or reset) current filter value.
+                Finally, why not to add some animation, using Vue transitions? Let's add appearance transition for the root element, as well as list animations for our <b>cat-pins</b>. See the source code for implementation details.
             </p>
-            <p>
-                We also want to indicate the active filter in the list. To achieve this, we provide the filter value as a prop, and use special object syntax for class binding, allowing us to set <b>active</b> class conditionally.
-            </p>
-            <p class="previous-step-message task-message">
-                We would really like to keep this set of examples as "question-driven" as possible. So, the next question is: how to implement filtering in response on a click over certain tag, given that this tag lives in a child component? Try to think ahead, and we believe figure out a decent solution before moving to the next @step2.2.
-            </p>            
+            <p class="task-message">
+                Seems like that's enough for simple standalone Vue examples. Let's move on to Vuex and bundle techniques, right?
+            </p>           
         </div>
     </div>
 
@@ -33,16 +31,18 @@
     <script src="./js/vue@2.0.5.js"></script>
 
     <script type="text/x-template" id="root-template">
+        <transition name="fade" :appear="true">
         <div id="app">
-
             <h1>{{ title }}</h1>
             <div class="filter">
                 <label for="tag_filter">Filter by tag:</label>
                 <input v-model="filter_value" name="tag_filter" id="tag_filter" placeholder="filter by tag">
                 <button @click="filter_value=''">Clear</button>
             </div>
-            <div class="cat-pins">
+            <transition-group name="list" tag="div" class="cat-pins">
                 <cat-pin v-for="cat_pin in filtered_cat_pins"
+                    class="list-complete-item"
+                    :key="cat_pin.image_url"
                     :image_url="cat_pin.image_url"
                     :author="cat_pin.author"
                     :description="cat_pin.description"
@@ -51,8 +51,9 @@
                     @tag-clicked="update_filter"
                 ></cat-pin>
                 <link rel="stylesheet" href="./css/cats.css" type="text/css">
-            </div>
+            </transition-group>
         </div>
+        </transition>
     </script>
 
     <script type="text/x-template" id="author-signature-template">
