@@ -11,14 +11,14 @@
 
     <div id="meta">
         <div class="image">
-            <img src="./img/step1.png">
+            <img src="./img/step2.jpg">
         </div>
         <div class="description">
             <p class="current-step-message">
-                In this example we introduce a whole bunch of new concepts: handling user input with <b>v-on:click</b> on the button, conditional rendering for paragrapsh via <b>v-if</b>, conditional display using <b>v-show</b>, and finally loops in templates via <b>v-for</b>. Look at the source code of this page for more details. Note the difference between <b>v-if</b>, which provide a real conditional rendering, and <b>v-for</b>, which simply hides and shows the element depending on the expression's truthness.
+                This example demonstrates the power of Vue components. We build a primitive Pinterest clone, dedicated to cute cats and vanilla songs. Apart from the root Vue instance, we also have a global component <b>cat-pin</b>, which uses a local component <b>author-signature</b>. Both of these components utilize <b>props</b>. We also introduce the concept of <b>computed properties</b> — take a look at user avatars, which <i>are actually not provided</i> for two of three existing signatures, according to the data we have.
             </p>
-            <p class="current-step-message">
-                You may also want to play with the data in console, or try to change the code — feel free to take care of good old <a href="https://people.csail.mit.edu/paulfitz/spanish/script.html">Monthy Python's sketch</a>. How about altering the colour of their nice uniforms?
+            <p class="task-message">
+                At this moment, we want to offer you a task. Try to implement a filtering feature, in order to show only cat-pins marked with a certain tag. Computed properties usage is advised.                
             </p>
         </div>
     </div>
@@ -32,39 +32,99 @@
     <script type="text/x-template" id="root-template">
         <div id="app">
 
-            <button v-on:click="expectations = !expectations">Change Expectations</button>            
+            <h1>{{ title }}</h1>
 
-            <p v-if="expectations">I didn't expect a kind of Spanish Inquisition.</p>
-            <p v-else>Pardon?</p>
-            
-            <div v-show="expectations">
-                <h1>{{ message }}</h1>
-                
-                <p>
-                    Amongst our weaponry are such diverse elements as:
-                </p>
-
-                <ul>
-                    <li v-for="weapon in weaponry">{{ weapon }}</li>
-                </ul>
+            <div class="cat-pins">
+                <cat-pin v-for="cat_pin in cat_pins"
+                    :image_url="cat_pin.image_url"
+                    :author="cat_pin.author"
+                    :description="cat_pin.description"
+                    :tags="cat_pin.tags"
+                ></cat-pin>
+                <link rel="stylesheet" href="./css/cats.css" type="text/css">
             </div>
-            
         </div>
     </script>
 
+    <script type="text/x-template" id="author-signature-template">
+        <div class="author-signature">
+            <div class="avatar"><img :src="avatar"></div>
+            <span class="name">{{ name }}</span>
+            <span class="status">{{ status }}</span>
+        </div>
+    </script>
+
+    <script type="text/x-template" id="cat-pin-template">
+        <div class="cat-pin">
+            <div class="image"><img :src="image_url"></div>
+            <ul class="tags">
+                <li v-for="tag in tags">{{ tag }}</li>                
+            </ul>
+            <p class="description">{{ description }}</p>
+            <author-signature :avatar_url="author.avatar_url" :name="author.name" :status="author.status" :gender="author.gender">
+        </div>
+    </script>    
+
     <script>
+        Vue.component('cat-pin', {
+            template: '#cat-pin-template',
+            props: ['image_url', 'author', 'tags', 'description'],
+            components: {
+                'author-signature': {
+                    template: '#author-signature-template',
+                    props: ['name', 'avatar_url', 'status', 'gender'],
+                    computed: {
+                        avatar: function () {                            
+                            return this.avatar_url ||
+                                ((this.gender == 'female')
+                                    ? '../img/avatars/default-female-avatar.jpg'
+                                    : '../img/avatars/default-male-avatar.png')
+                        }
+                      }
+
+                }
+            }
+        });        
+
         var app = new Vue({
           el: '#app',
           template: '#root-template',
           data: {
-            expectations: false,
-            message: 'NOBODY expects the Spanish Inquisition!',
-            weaponry: [
-                'fear',
-                'surprise',
-                'ruthless efficiency',
-                'an almost fanatical devotion to the Pope',
-                'and nice red uniforms '
+            title: 'CatInterest',
+            cat_pins: [
+                {
+                    image_url: './img/cats/munchkin-kitten.jpg',
+                    tags: ['munchkin', 'kitten', 'cat'],
+                    description: 'A nice munchkin kitten pic',
+                    author: {
+                        name: 'Told Myself',
+                        status: 'Okay, you were right for me',
+                        avatar_url: '',
+                        gender: 'male'
+                    }
+                },
+                {
+                    image_url: './img/cats/siam-kitten.jpg',
+                    tags: ['siam', 'kitten', 'cat'],
+                    description: 'Awesome siam kitten pic',
+                    author: {
+                        name: 'But Felt',
+                        status: '... felt so lonely in your company =(',
+                        avatar_url: '',
+                        gender: 'female'
+                    }
+                },
+                {
+                    image_url: './img/cats/standing-cat.jpg',
+                    tags: ['cat', 'standing', 'cute'],
+                    description: 'A well-known standing cat',
+                    author: {
+                        name: 'But That',
+                        status: 'it`s an ache I still remember',
+                        avatar_url: '../img/avatars/mr-black-avatar.png',
+                        gender: 'male'
+                    }
+                }
             ]
           }
         })

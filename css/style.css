@@ -53,6 +53,10 @@ body {
             text-decoration: line-through;
         }
 
+        #meta .description .task-message {
+            color: green;
+        }
+
     @media (max-width: 1440px) {
         #meta .image {
            max-width: 40%;
