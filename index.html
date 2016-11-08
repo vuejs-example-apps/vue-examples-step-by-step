@@ -11,18 +11,14 @@
 
     <div id="meta">
         <div class="image">
-            <img src="./img/step0.1.png">
+            <img src="./img/step1.png">
         </div>
         <div class="description">
             <p class="current-step-message">
-                In order to get rid of the splash, we have moved the template of our application in the &lt;script&gt; tag.
-                See the source code of this page for details.<br>
-                We have also introduced some CSS in order to make the experience of following this guide feel better.
+                In this example we introduce a whole bunch of new concepts: handling user input with <b>v-on:click</b> on the button, conditional rendering for paragrapsh via <b>v-if</b>, conditional display using <b>v-show</b>, and finally loops in templates via <b>v-for</b>. Look at the source code of this page for more details. Note the difference between <b>v-if</b>, which provide a real conditional rendering, and <b>v-for</b>, which simply hides and shows the element depending on the expression's truthness.
             </p>
-
-            <p class="previous-step-message">
-                You may notice a splash, displaying a template string instead of an actual text while the page loads.
-                It is happening because we use actual HTML/DOM nodes as a template for the component in this example.
+            <p class="current-step-message">
+                You may also want to play with the data in console, or try to change the code — feel free to take care of good old <a href="https://people.csail.mit.edu/paulfitz/spanish/script.html">Monthy Python's sketch</a>. How about altering the colour of their nice uniforms?
             </p>
         </div>
     </div>
@@ -35,13 +31,23 @@
 
     <script type="text/x-template" id="root-template">
         <div id="app">
+
+            <button v-on:click="expectations = !expectations">Change Expectations</button>            
+
+            <p v-if="expectations">I didn't expect a kind of Spanish Inquisition.</p>
+            <p v-else>Pardon?</p>
             
-            <h1>{{ message }}</h1>
-            
-            <p>
-                The message above is reactively binded with app's data <b>message</b> variable.<br>
-                Try opening your console and changing <b>app.message</b>.
-            </p>
+            <div v-show="expectations">
+                <h1>{{ message }}</h1>
+                
+                <p>
+                    Amongst our weaponry are such diverse elements as:
+                </p>
+
+                <ul>
+                    <li v-for="weapon in weaponry">{{ weapon }}</li>
+                </ul>
+            </div>
             
         </div>
     </script>
@@ -51,7 +57,15 @@
           el: '#app',
           template: '#root-template',
           data: {
-            message: 'A Standalone Vue Component Example'
+            expectations: false,
+            message: 'NOBODY expects the Spanish Inquisition!',
+            weaponry: [
+                'fear',
+                'surprise',
+                'ruthless efficiency',
+                'an almost fanatical devotion to the Pope',
+                'and nice red uniforms '
+            ]
           }
         })
     </script>
