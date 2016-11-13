@@ -2,8 +2,8 @@
 
 <head>
     <title>Standalone Vue Component Example</title>    
-    <link rel="stylesheet" href="./css/style.css" type="text/css">
-    <link rel="stylesheet" href="./css/animations.css" type="text/css">
+    <link rel="stylesheet" href="./assets/css/style.css" type="text/css">
+    <link rel="stylesheet" href="./assets/css/animations.css" type="text/css">
 </head>
 
 <body>
@@ -12,7 +12,7 @@
 
     <div id="meta">
         <div class="image">
-            <img src="./img/step2.2.jpg">
+            <img src="./assets/img/step2.2.jpg">
         </div>
         <div class="description">
             <p class="current-step-message">
@@ -28,141 +28,14 @@
         Vue Examples by <a href="http://github.com/gbezyuk">gbezyuk</a>
     </footer>
 
-    <script src="./js/vue@2.0.5.js"></script>
-
-    <script type="text/x-template" id="root-template">
-        <transition name="fade" :appear="true">
-        <div id="app">
-            <h1>{{ title }}</h1>
-            <div class="filter">
-                <label for="tag_filter">Filter by tag:</label>
-                <input v-model="filter_value" name="tag_filter" id="tag_filter" placeholder="filter by tag">
-                <button @click="filter_value=''">Clear</button>
-            </div>
-            <transition-group name="list" tag="div" class="cat-pins">
-                <cat-pin v-for="cat_pin in filtered_cat_pins"
-                    class="list-complete-item"
-                    :key="cat_pin.image_url"
-                    :image_url="cat_pin.image_url"
-                    :author="cat_pin.author"
-                    :description="cat_pin.description"
-                    :tags="cat_pin.tags"
-                    :filter_value="filter_value"
-                    @tag-clicked="update_filter"
-                ></cat-pin>
-                <link rel="stylesheet" href="./css/cats.css" type="text/css">
-            </transition-group>
-        </div>
-        </transition>
+    <script src="./lib/vue@2.0.5.js"></script>
+    <script type="text/javascript" src="./components/AuthorSignature.js"></script>
+    <script type="text/javascript" src="./components/CatPin.js"></script>
+    <script type="text/javascript" src="./components/App.js"></script>
+    <script type="text/javascript">
+        app = new Vue(App, {el: '#app'});        
     </script>
 
-    <script type="text/x-template" id="author-signature-template">
-        <div class="author-signature">
-            <div class="avatar"><img :src="avatar"></div>
-            <span class="name">{{ name }}</span>
-            <span class="status">{{ status }}</span>
-        </div>
-    </script>
-
-    <script type="text/x-template" id="cat-pin-template">
-        <div class="cat-pin">
-            <div class="image"><img :src="image_url"></div>
-            <ul class="tags">
-                <li v-for="tag in tags" :class='{active: filter_value == tag}' @click='handle_tag_click(tag)'>{{ tag }}</li>                
-            </ul>
-            <p class="description">{{ description }}</p>
-            <author-signature :avatar_url="author.avatar_url" :name="author.name" :status="author.status" :gender="author.gender">
-        </div>
-    </script>    
-
-    <script>
-        Vue.component('cat-pin', {
-            template: '#cat-pin-template',
-            props: ['image_url', 'author', 'tags', 'description', 'filter_value'],
-            methods: {
-                handle_tag_click: function (tag) {
-                    this.$emit('tag-clicked', tag);
-                }
-            },
-            components: {
-                'author-signature': {
-                    template: '#author-signature-template',
-                    props: ['name', 'avatar_url', 'status', 'gender'],
-                    computed: {
-                        avatar: function () {                            
-                            return this.avatar_url ||
-                                ((this.gender == 'female')
-                                    ? '../img/avatars/default-female-avatar.jpg'
-                                    : '../img/avatars/default-male-avatar.png')
-                        }
-                      }
-
-                }
-            }
-        });        
-
-        var app = new Vue({
-          el: '#app',
-          template: '#root-template',
-          computed: {
-              filtered_cat_pins: function () {
-                    var term = this.filter_value;
-                    if (!term) return this.cat_pins;
-                    return this.cat_pins.filter(function (pin) {
-                        return pin.tags.indexOf(term) > -1;
-                    })
-              }
-          },
-          methods: {
-            update_filter: function (filter_value) {
-                if (this.filter_value == filter_value) {
-                    this.filter_value = '';
-                } else {
-                    this.filter_value = filter_value;
-                }
-            }
-          },
-          data: {
-            title: 'CatInterest',
-            filter_value: '',
-            cat_pins: [
-                {
-                    image_url: './img/cats/munchkin-kitten.jpg',
-                    tags: ['munchkin', 'kitten', 'cat'],
-                    description: 'A nice munchkin kitten pic',
-                    author: {
-                        name: 'Told Myself',
-                        status: 'Okay, you were right for me',
-                        avatar_url: '',
-                        gender: 'male'
-                    }
-                },
-                {
-                    image_url: './img/cats/siam-kitten.jpg',
-                    tags: ['siam', 'kitten', 'cat'],
-                    description: 'Awesome siam kitten pic',
-                    author: {
-                        name: 'But Felt',
-                        status: '... felt so lonely in your company =(',
-                        avatar_url: '',
-                        gender: 'female'
-                    }
-                },
-                {
-                    image_url: './img/cats/standing-cat.jpg',
-                    tags: ['cat', 'standing', 'cute'],
-                    description: 'A well-known standing cat',
-                    author: {
-                        name: 'But That',
-                        status: 'it`s an ache I still remember',
-                        avatar_url: '../img/avatars/mr-black-avatar.png',
-                        gender: 'male'
-                    }
-                }
-            ]
-          }
-        })
-    </script>
 </body>
 
 </html>
