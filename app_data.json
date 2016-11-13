@@ -3,7 +3,7 @@
     "filter_value": "",
     "cat_pins": [
         {
-            "image_url": "./img/cats/munchkin-kitten.jpg",
+            "image_url": "/assets/img/cats/munchkin-kitten.jpg",
             "tags": ["munchkin", "kitten", "cat"],
             "description": "A nice munchkin kitten pic",
             "author": {
@@ -14,7 +14,7 @@
             }
         },
         {
-            "image_url": "./img/cats/siam-kitten.jpg",
+            "image_url": "/assets/img/cats/siam-kitten.jpg",
             "tags": ["siam", "kitten", "cat"],
             "description": "Awesome siam kitten pic",
             "author": {
@@ -25,13 +25,13 @@
             }
         },
         {
-            "image_url": "./img/cats/standing-cat.jpg",
+            "image_url": "/assets/img/cats/standing-cat.jpg",
             "tags": ["cat", "standing", "cute"],
             "description": "A well-known standing cat",
             "author": {
                 "name": "But That",
                 "status": "it`s an ache I still remember",
-                "avatar_url": "../img/avatars/mr-black-avatar.png",
+                "avatar_url": "/assets/img/avatars/mr-black-avatar.png",
                 "gender": "male"
             }
         }
